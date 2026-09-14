@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MCG Phone Troubleshooting</title>
+<title>MCG Phone Troubleshooting Wizard</title>
 
 <style>
 
 body{
-    font-family:Arial,sans-serif;
+    font-family: Arial, sans-serif;
     background:#f4f4f4;
     margin:0;
     padding:40px;
@@ -23,6 +23,10 @@ body{
     border-radius:10px;
     box-shadow:0 2px 12px rgba(0,0,0,.2);
     text-align:center;
+}
+
+h1{
+    color:#004b87;
 }
 
 h2{
@@ -54,7 +58,7 @@ button{
 }
 
 .result{
-    font-size:22px;
+    font-size:20px;
     font-weight:bold;
     margin-top:20px;
 }
@@ -65,7 +69,11 @@ button{
 <body>
 
 <div class="card">
+
+    <h1>MCG Phone Troubleshooting Wizard</h1>
+
     <div id="wizard"></div>
+
 </div>
 
 <script>
@@ -73,168 +81,56 @@ button{
 const flow = {
 
 start:{
-question:"Connect directly to the ONT.",
-buttons:[
-{
-text:"Continue",
-next:"dhcp"
-}
-]
+    question:"Plug directly into the ONT.",
+    buttons:[
+        {
+            text:"Continue",
+            next:"dialtone"
+        }
+    ]
+},
+
+dialtone:{
+    question:"Did you get Dial Tone?",
+    buttons:[
+        {
+            text:"Yes",
+            class:"yes",
+            next:"issue"
+        },
+        {
+            text:"No",
+            class:"no",
+            next:"dhcp"
+        }
+    ]
 },
 
 dhcp:{
-question:"Did you receive DHCP?",
-buttons:[
-{
-text:"Yes",
-class:"yes",
-next:"browse"
-},
-{
-text:"No",
-class:"no",
-next:"escalate"
-}
-]
+    question:"Did you receive DHCP?",
+    buttons:[
+        {
+            text:"Yes",
+            class:"yes",
+            next:"browse"
+        },
+        {
+            text:"No",
+            class:"no",
+            next:"escalate"
+        }
+    ]
 },
 
 browse:{
-question:"Can you browse the internet?",
-buttons:[
-{
-text:"Yes",
-class:"yes",
-next:"wifi"
-},
-{
-text:"No",
-class:"no",
-next:"router"
-}
-]
-},
-
-wifi:{
-question:"Is this a Wi‑Fi issue?",
-buttons:[
-{
-text:"Yes",
-class:"yes",
-next:"wifiissue"
-},
-{
-text:"No",
-class:"no",
-next:"voice"
-}
-]
-},
-
-voice:{
-question:"Is this a Voice issue?",
-buttons:[
-{
-text:"Yes",
-class:"yes",
-next:"voiceissue"
-},
-{
-text:"No",
-class:"no",
-next:"tv"
-}
-]
-},
-
-tv:{
-question:"Is this a TV issue?",
-buttons:[
-{
-text:"Yes",
-class:"yes",
-next:"tvissue"
-},
-{
-text:"No",
-class:"no",
-next:"other"
-}
-]
-},
-
-wifiissue:{
-result:"Proceed with Wi‑Fi troubleshooting."
-},
-
-voiceissue:{
-result:"Proceed with Voice troubleshooting."
-},
-
-tvissue:{
-result:"Proceed with TV troubleshooting."
-},
-
-router:{
-result:"Likely customer router/equipment issue."
-},
-
-escalate:{
-result:"No DHCP detected. Escalate to Operations."
-},
-
-other:{
-result:"Further troubleshooting required."
-}
-
-};
-
-function showStep(step){
-
-const node = flow[step];
-
-let html = "";
-
-if(node.question){
-
-html += `<h2>${node.question}</h2>`;
-
-node.buttons.forEach(btn=>{
-
-html += `
-<button
-class="${btn.class || 'restart'}"
-onclick="showStep('${btn.next}')">
-${btn.text}
-</button>
-`;
-
-});
-
-}
-else{
-
-html += `
-<div class="result">
-${node.result}
-</div>
-
-<br>
-
-<button
-class="restart"
-onclick="showStep('start')">
-Start Over
-</button>
-`;
-
-}
-
-document.getElementById("wizard").innerHTML = html;
-}
-
-showStep("start");
-
-</script>
-
-</body>
-</html>
+    question:"Can you browse the internet?",
+    buttons:[
+        {
+            text:"Yes",
+            class:"yes",
+            next:"issue"
+        },
+        {
+            text:"No",
+            class:"no",
+     
