@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MCG Phone Troubleshooting</title>
+
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f4f4;
+    margin:0;
+    padding:40px;
+}
+
+.card{
+    background:white;
+    max-width:700px;
+    margin:auto;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 2px 12px rgba(0,0,0,.2);
+    text-align:center;
+}
+
+h2{
+    margin-bottom:20px;
+}
+
+button{
+    margin:10px;
+    padding:12px 24px;
+    font-size:16px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.yes{
+    background:#28a745;
+    color:white;
+}
+
+.no{
+    background:#dc3545;
+    color:white;
+}
+
+.restart{
+    background:#0078d4;
+    color:white;
+}
+
+.result{
+    font-size:22px;
+    font-weight:bold;
+    margin-top:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <div id="wizard"></div>
+</div>
+
+<script>
+
+const flow = {
+
+start:{
+question:"Connect directly to the ONT.",
+buttons:[
+{
+text:"Continue",
+next:"dhcp"
+}
+]
+},
+
+dhcp:{
+question:"Did you receive DHCP?",
+buttons:[
+{
+text:"Yes",
+class:"yes",
+next:"browse"
+},
+{
+text:"No",
+class:"no",
+next:"escalate"
+}
+]
+},
+
+browse:{
+question:"Can you browse the internet?",
+buttons:[
+{
+text:"Yes",
+class:"yes",
+next:"wifi"
+},
+{
+text:"No",
+class:"no",
+next:"router"
+}
+]
+},
+
+wifi:{
+question:"Is this a Wi‑Fi issue?",
+buttons:[
+{
+text:"Yes",
+class:"yes",
+next:"wifiissue"
+},
+{
+text:"No",
+class:"no",
+next:"voice"
+}
+]
+},
+
+voice:{
+question:"Is this a Voice issue?",
+buttons:[
+{
+text:"Yes",
+class:"yes",
+next:"voiceissue"
+},
+{
+text:"No",
+class:"no",
+next:"tv"
+}
+]
+},
+
+tv:{
+question:"Is this a TV issue?",
+buttons:[
+{
+text:"Yes",
+class:"yes",
+next:"tvissue"
+},
+{
+text:"No",
+class:"no",
+next:"other"
+}
+]
+},
+
+wifiissue:{
+result:"Proceed with Wi‑Fi troubleshooting."
+},
+
+voiceissue:{
+result:"Proceed with Voice troubleshooting."
+},
+
+tvissue:{
+result:"Proceed with TV troubleshooting."
+},
+
+router:{
+result:"Likely customer router/equipment issue."
+},
+
+escalate:{
+result:"No DHCP detected. Escalate to Operations."
+},
+
+other:{
+result:"Further troubleshooting required."
+}
+
+};
+
+function showStep(step){
+
+const node = flow[step];
+
+let html = "";
+
+if(node.question){
+
+html += `<h2>${node.question}</h2>`;
+
+node.buttons.forEach(btn=>{
+
+html += `
+<button
+class="${btn.class || 'restart'}"
+onclick="showStep('${btn.next}')">
+${btn.text}
+</button>
+`;
+
+});
+
+}
+else{
+
+html += `
+<div class="result">
+${node.result}
+</div>
+
+<br>
+
+<button
+class="restart"
+onclick="showStep('start')">
+Start Over
+</button>
+`;
+
+}
+
+document.getElementById("wizard").innerHTML = html;
+}
+
+showStep("start");
+
+</script>
+
+</body>
+</html>
